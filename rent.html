@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties for Rent | PELEPRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #4ecdc4; /* Changed to a fresh teal/blue for Renting */
+            --glass: rgba(18, 18, 18, 0.9);
+            --card-glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background: #0f0f0f; 
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 20px; left: 5%; width: 90%; height: 70px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 0 40px;
+            display: flex; justify-content: space-between;
+            align-items: center; z-index: 1000;
+        }
+        .logo { font-size: 20px; font-weight: 700; color: #fff; text-decoration: none; }
+        .logo span { color: #FFA500; }
+        
+        .nav-links { display: flex; gap: 25px; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: rgba(255,255,255,0.7); font-size: 11px; text-transform: uppercase; font-weight: 600; }
+
+        /* --- HEADER SECTION --- */
+        .page-header {
+            padding: 150px 5% 40px;
+            background: linear-gradient(to bottom, rgba(78,205,196,0.1), transparent);
+            text-align: center;
+        }
+        .page-header h1 { font-size: 36px; letter-spacing: -1px; margin-bottom: 10px; }
+        .page-header p { color: rgba(255,255,255,0.5); font-size: 14px; }
+
+        /* --- GRID LAYOUT --- */
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; padding-bottom: 80px; }
+        
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .property-card {
+            background: var(--card-glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.4s;
+        }
+        .property-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+
+        .img-container { width: 100%; height: 220px; position: relative; overflow: hidden; }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .property-card:hover img { scale: 1.1; }
+
+        .badge {
+            position: absolute; top: 15px; left: 15px;
+            background: var(--primary); color: white;
+            padding: 5px 12px; border-radius: 6px; font-size: 10px; font-weight: 700;
+        }
+
+        .details { padding: 20px; }
+        .details h3 { font-size: 18px; margin-bottom: 8px; font-weight: 600; }
+        .details .price { color: var(--primary); font-size: 20px; font-weight: 700; margin-bottom: 15px; }
+
+        .btn-view {
+            display: block; width: 100%; padding: 12px; text-align: center;
+            background: rgba(255,255,255,0.1); color: white;
+            text-decoration: none; border-radius: 10px; font-size: 12px;
+            font-weight: 600; transition: 0.3s;
+        }
+        .btn-view:hover { background: white; color: black; }
+
+        .no-results { text-align: center; padding: 100px 0; color: rgba(255,255,255,0.3); }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">PELE<span>PRO</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sale.html">For Sale</a></li>
+            <li><a href="rent.html" style="color: var(--primary);">For Rent</a></li>
+        </ul>
+    </nav>
+
+    <header class="page-header">
+        <h1 id="headerTitle">Available for Rent</h1>
+        <p id="subTitle">Find your perfect temporary home or luxury lease.</p>
+    </header>
+
+    <div class="container">
+        <div class="property-grid" id="rentGrid">
+            </div>
+        <div id="noResults" class="no-results" style="display: none;">
+            <h3>No rentals found in that location.</h3>
+            <p>Try searching for a different city or neighborhood.</p>
+        </div>
+    </div>
+
+    <script>
+        function loadRentals() {
+            const grid = document.getElementById('rentGrid');
+            const noResults = document.getElementById('noResults');
+            const headerTitle = document.getElementById('headerTitle');
+            
+            const db = JSON.parse(localStorage.getItem('property_db')) || [];
+            
+            // 1. Filter only for 'rent' items
+            let rentListings = db.filter(item => item.type === 'rent');
+
+            // 2. Check for Search Filter
+            const searchLoc = localStorage.getItem('lastSearchLoc');
+            const searchState = localStorage.getItem('lastSearchState');
+            if (searchLoc) {
+                rentListings = rentListings.filter(p => {
+                    const locationValue = (p.location || p.lga || "").toLowerCase();
+                    const stateValue = (p.state || "").toLowerCase();
+                    const titleValue = (p.title || "").toLowerCase();
+
+                    return locationValue.includes(searchLoc) ||
+                        stateValue.includes(searchState || searchLoc) ||
+                        titleValue.includes(searchLoc);
+                });
+                headerTitle.innerText = `Rentals in "${searchLoc.toUpperCase()}"`;
+                localStorage.removeItem('lastSearchLoc');
+                localStorage.removeItem('lastSearchState');
+            }
+
+            // 3. Render
+            if (rentListings.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+
+            grid.innerHTML = rentListings.map(p => `
+                <div class="property-card">
+                    <div class="img-container">
+                        <span class="badge">FOR RENT</span>
+                        <img src="${p.image || 'https://via.placeholder.com/400x300?text=No+Image'}" alt="${p.title}">
+                    </div>
+                    <div class="details">
+                        <h3>${p.title}</h3>
+                        <p class="price">${p.price}</p>
+                        <a href="property-details.html?id=${p.id}" class="btn-view">View Details</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.onload = loadRentals;
+    </script>
+</body>
+</html>

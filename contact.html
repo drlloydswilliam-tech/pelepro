@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | PELEPRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #ff6b6b; 
+            --glass: rgba(0, 31, 63, 0.8); 
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --dark-glass: rgba(0, 31, 63, 0.6);
+            --text-light: rgba(255,255,255,0.9);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            position: fixed; top: 20px; left: 5%; width: 90%; height: 70px;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 15px;
+            padding: 0 30px; display: flex; justify-content: space-between;
+            align-items: center; z-index: 1000;
+        }
+        .logo { font-size: 20px; font-weight: 700; color: #fff; text-decoration: none; }
+        .logo span { color: #FFA500; }
+        .nav-right { display: flex; align-items: center; gap: 30px; }
+        nav ul { list-style: none; display: flex; gap: 25px; }
+        nav ul li a { text-decoration: none; color: rgba(255,255,255,0.7); font-size: 11px; text-transform: uppercase; font-weight: 600; transition: 0.3s; padding: 8px 16px; border-radius: 6px; }
+        nav ul li a:hover { color: #1a1a1a; background: #FFD700; transform: translateY(-2px); font-weight: 700; }
+        #adminPostBtn { display: none; background: var(--primary); color: white; padding: 10px 18px; border-radius: 8px; font-size: 11px; font-weight: 600; text-decoration: none; }
+
+        .page-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 120px 5% 50px; }
+        .contact-card {
+            width: 100%; max-width: 1000px;
+            background: rgba(0, 31, 63, 0.92); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+            padding: 40px;
+        }
+        .contact-card h1 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 10px; }
+        .contact-card p { color: rgba(255,255,255,0.8); margin-bottom: 30px; line-height: 1.8; }
+
+        .contact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+        .contact-field { display: flex; flex-direction: column; gap: 8px; }
+        .contact-field label { font-size: 12px; text-transform: uppercase; color: rgba(255,255,255,0.75); font-weight: 700; }
+        .contact-field input[type="text"], .contact-field input[type="email"], .contact-field select, .contact-field textarea, .contact-field input[type="file"] {
+            width: 100%; padding: 14px 16px; border-radius: 14px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);
+            color: #fff; outline: none; font-size: 14px;
+        }
+        .contact-field textarea { min-height: 180px; resize: vertical; }
+        .contact-field input[type="file"] { border-style: dashed; }
+        .contact-full { grid-column: 1 / -1; }
+        .contact-status { margin-top: 20px; font-size: 14px; color: #b0ff9d; font-weight: 700; }
+        .btn-submit { margin-top: 10px; padding: 16px 28px; border-radius: 12px; border: none; background: var(--primary); color: #fff; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-submit:hover { background: #ff5252; transform: translateY(-3px); }
+
+        footer { text-align: center; padding: 25px 0; font-size: 12px; color: rgba(255,255,255,0.5); }
+
+        @media (max-width: 800px) {
+            .contact-grid { grid-template-columns: 1fr; }
+            nav { padding: 0 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="index.html" class="logo">PELE<span>PRO</span></a>
+    <div class="nav-right">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="search.html?type=sale">For Sale</a></li>
+            <li><a href="search.html?type=rent">For Rent</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <a href="admin.html" id="adminPostBtn">Post Property</a>
+    </div>
+</nav>
+
+<div class="page-wrapper">
+    <div class="contact-card">
+        <h1>Contact Us</h1>
+        <p>Send your property request, upload multiple images/videos, and submit any enquiry for admin review.</p>
+        <form id="contactForm" onsubmit="submitContactForm(event)">
+            <div class="contact-grid">
+                <div class="contact-field">
+                    <label for="contactName">Your Name</label>
+                    <input type="text" id="contactName" placeholder="Enter your full name" required>
+                </div>
+                <div class="contact-field">
+                    <label for="contactEmail">Email Address</label>
+                    <input type="email" id="contactEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="contact-field contact-full">
+                    <label for="contactType">Request Type</label>
+                    <select id="contactType" required>
+                        <option value="">Select request type</option>
+                        <option value="post_property">Post a Property</option>
+                        <option value="general_inquiry">General Enquiry</option>
+                    </select>
+                </div>
+                <div class="contact-field contact-full">
+                    <label for="contactMessage">Message / Property Details</label>
+                    <textarea id="contactMessage" placeholder="Write your request or enquiry here" required></textarea>
+                </div>
+                <div class="contact-field">
+                    <label for="contactImages">Upload Images</label>
+                    <input type="file" id="contactImages" accept="image/*" multiple>
+                </div>
+                <div class="contact-field">
+                    <label for="contactVideos">Upload Videos</label>
+                    <input type="file" id="contactVideos" accept="video/*" multiple>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit">Submit Request</button>
+            <p id="contactStatus" class="contact-status"></p>
+        </form>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 PELEPRO. Engineered for Excellence.
+</footer>
+
+<script>
+    if (localStorage.getItem('isAdmin') === 'true') {
+        document.getElementById('adminPostBtn').style.display = 'inline-block';
+    }
+
+    function fileToDataUrl(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve({ name: file.name, type: file.type, data: reader.result });
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function submitContactForm(event) {
+        event.preventDefault();
+
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const requestType = document.getElementById('contactType').value;
+        const message = document.getElementById('contactMessage').value.trim();
+        const statusEl = document.getElementById('contactStatus');
+        const imageFiles = Array.from(document.getElementById('contactImages').files);
+        const videoFiles = Array.from(document.getElementById('contactVideos').files);
+
+        if (!name || !email || !requestType || !message) {
+            statusEl.textContent = 'Please complete all required fields before sending.';
+            return;
+        }
+
+        statusEl.textContent = 'Uploading your request...';
+
+        try {
+            const imageData = await Promise.all(imageFiles.map(fileToDataUrl));
+            const videoData = await Promise.all(videoFiles.map(fileToDataUrl));
+
+            const requests = JSON.parse(localStorage.getItem('contact_requests')) || [];
+            requests.push({
+                id: Date.now(),
+                name,
+                email,
+                requestType,
+                message,
+                images: imageData,
+                videos: videoData,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('contact_requests', JSON.stringify(requests));
+
+            document.getElementById('contactForm').reset();
+            statusEl.textContent = 'Your request has been submitted successfully. Our admin will review it shortly.';
+        } catch (error) {
+            console.error(error);
+            statusEl.textContent = 'There was a problem uploading your files. Please try again.';
+        }
+    }
+</script>
+</body>
+</html>
