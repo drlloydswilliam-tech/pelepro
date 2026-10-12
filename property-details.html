@@ -137,9 +137,19 @@
         }
 
         @media (max-width: 850px) {
+            nav { flex-wrap: wrap; gap: 16px; padding: 18px 5%; }
             .property-header-grid, .gallery-grid, .bottom-grid { grid-template-columns: 1fr; }
             .side-gallery { grid-template-columns: repeat(3, 1fr); grid-template-rows: none; }
             .main-img { height: 300px; }
+            .bottom-grid { gap: 20px; }
+            .contact-card { padding: 22px; }
+        }
+
+        @media (max-width: 520px) {
+            .side-gallery { grid-template-columns: 1fr; }
+            .property-header-grid, .gallery-grid, .bottom-grid { gap: 16px; }
+            .container { padding: 0 4% 40px; }
+            nav { padding: 16px 4%; }
         }
     </style>
 </head>

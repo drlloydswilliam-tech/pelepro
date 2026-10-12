@@ -6,12 +6,40 @@
     <title>PELEPRO | Master Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #ff6b6b; --dark: #2d3436; --bg: #f4f7f6; }
+        :root { 
+            --primary: #ff6b6b; 
+            --dark: #2d3436; 
+            --bg: #f4f7f6; 
+            --success: #2ecc71;
+            --border-color: #dfe6e9;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: var(--bg); color: var(--dark); padding: 40px 5%; }
 
         .dashboard-header { max-width: 1100px; margin: 0 auto 30px; display: flex; justify-content: space-between; align-items: center; }
         .back-link { text-decoration: none; color: var(--primary); font-weight: 600; font-size: 14px; }
+
+        /* Navigation Tabs */
+        .admin-nav-tabs {
+            display: flex;
+            gap: 10px;
+            max-width: 1100px;
+            margin: 0 auto 20px auto;
+        }
+        .tab-btn {
+            background: #e4ebe9;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: 0.3s;
+        }
+        .tab-btn.active {
+            background: var(--dark);
+            color: white;
+        }
 
         .dashboard-container {
             max-width: 1100px;
@@ -20,6 +48,11 @@
             grid-template-columns: 450px 1fr;
             gap: 30px;
         }
+
+        /* Toggle utility for layouts */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .full-width-container { grid-column: 1 / -1; }
 
         .admin-card {
             background: white; padding: 30px; border-radius: 20px;
@@ -31,9 +64,9 @@
         .form-group { margin-bottom: 20px; }
         label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; color: #b2bec3; }
         
-        input[type="text"], select {
+        input[type="text"], input[type="password"], select {
             width: 100%; padding: 12px; border-radius: 10px;
-            border: 1px solid #dfe6e9; outline: none; font-size: 14px;
+            border: 1px solid var(--border-color); outline: none; font-size: 14px;
         }
 
         input[type="file"] {
@@ -62,15 +95,64 @@
         .btn-action { border: none; background: none; font-weight: 600; cursor: pointer; margin-right: 10px; font-size: 12px; }
         .btn-edit { color: #0984e3; }
         .btn-delete { color: #ff7675; }
+        .btn-action-verify { color: #2ecc71; }
 
         .badge-featured { background: #ffeaa7; color: #d63031; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
 
-        #uploadStatus { font-size: 12px; color: var(--primary); margin-top: 10px; font-weight: 600; }
+        .enquiries-list { display: grid; gap: 20px; }
+        .enquiry-card {
+            background: #fff; border: 1px solid var(--border-color); border-radius: 18px;
+            padding: 20px; box-shadow: 0 8px 24px rgba(45,52,54,0.05);
+        }
+        .enquiry-header {
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+            margin-bottom: 14px;
+        }
+        .enquiry-header strong { font-size: 17px; }
+        .enquiry-header small { display: block; color: #636e72; margin-top: 2px; }
+        .enquiry-meta {
+            display: flex; flex-wrap: wrap; gap: 12px 18px; font-size: 12px; color: #636e72;
+            margin-bottom: 12px;
+        }
+        .enquiry-message { font-size: 14px; line-height: 1.7; color: var(--dark); margin-bottom: 18px; }
+        .media-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px; margin-top: 12px;
+        }
+        .media-grid img, .media-grid video {
+            width: 100%; height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid var(--border-color); background: #f5f5f5;
+        }
+        .empty-state {
+            background: white; border: 1px dashed #bdc3c7; border-radius: 12px; padding: 26px; text-align: center; color: #636e72;
+        }
+
+        #uploadStatus, #passwordStatus { font-size: 12px; margin-top: 10px; font-weight: 600; }
+        .status-success { color: var(--success); }
+        .status-error { color: var(--primary); }
+
+        @media (max-width: 900px) {
+            body { padding: 24px 4%; }
+            .dashboard-header { flex-direction: column; align-items: stretch; gap: 18px; }
+            .admin-nav-tabs { flex-direction: column; gap: 8px; }
+            .dashboard-container { grid-template-columns: 1fr; gap: 24px; }
+            .admin-card, .manage-card { padding: 24px; }
+            .admin-card { position: static; top: auto; }
+            .btn-post { padding: 14px; }
+            .manage-card { overflow-x: auto; }
+            .manage-card table { min-width: 600px; }
+        }
+
+        @media (max-width: 520px) {
+            body { padding: 18px 3%; }
+            .admin-card, .manage-card { padding: 18px; }
+            .dashboard-header { gap: 14px; }
+            th, td { font-size: 11px; padding: 10px 0; }
+            .btn-post { padding: 12px; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Login Form -->
     <div id="loginContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; justify-content: center; align-items: center;">
         <div style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; width: 90%;">
             <h2 style="margin-bottom: 20px; color: #2d3436;">Admin Login</h2>
@@ -81,99 +163,145 @@
     </div>
 
     <div id="adminContent" style="display: none;">
+        
         <div class="dashboard-header">
             <a href="index.html" class="back-link">← Return to Site</a>
             <h1 style="font-size: 24px;">Admin Dashboard</h1>
             <button onclick="logoutAdmin()" style="background: #b2bec3; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">Logout</button>
         </div>
 
-    <div class="dashboard-container">
-        <div class="admin-card">
-            <h2 id="formTitle">Add New Property</h2>
-            
-            <input type="hidden" id="editId">
-
-            <div class="form-group">
-                <label>Property Name</label>
-                <input type="text" id="pTitle" placeholder="e.g. Ocean View Apartment">
-            </div>
-
-            <div class="form-group">
-                <label>State</label>
-                <select id="pState" onchange="updateLGA()">
-                    <option value="">Select State</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>LGA / Neighborhood</label>
-                <select id="pLGA">
-                    <option value="">Select LGA</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Price</label>
-                <input type="text" id="pPrice" placeholder="e.g. ₦150,000,000">
-            </div>
-
-            <div class="form-group">
-                <label>Category</label>
-                <select id="pType">
-                    <option value="sale">For Sale</option>
-                    <option value="rent">For Rent</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="pDescription" placeholder="Describe the property, features, amenities, etc." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #dfe6e9; font-size: 14px; font-family: 'Poppins', sans-serif; resize: vertical; min-height: 100px;"></textarea>
-            </div>
-
-            <div class="form-group checkbox-group">
-                <input type="checkbox" id="pFeatured">
-                <label style="margin-bottom:0">Featured (Show on Home Slider)</label>
-            </div>
-
-            <div class="form-group checkbox-group">
-                <input type="checkbox" id="pVerified">
-                <label style="margin-bottom:0">Verified Property</label>
-            </div>
-
-            <div class="form-group">
-                <label>Upload Images</label>
-                <input type="file" id="pImages" accept="image/*" multiple>
-            </div>
-
-            <div class="form-group">
-                <label>Upload Videos (Optional)</label>
-                <input type="file" id="pVideos" accept="video/*" multiple>
-            </div>
-
-            <button class="btn-post" id="publishBtn" onclick="processAndSave()">Publish Listing</button>
-            <button class="btn-post" id="cancelBtn" onclick="resetForm()" style="display:none; background:#b2bec3; margin-top: 5px;">Cancel Edit</button>
-            <p id="uploadStatus"></p>
+        <div class="admin-nav-tabs">
+            <button id="tabBtnListings" class="tab-btn active" onclick="switchTab('listings')">Manage Listings</button>
+            <button id="tabBtnEnquiries" class="tab-btn" onclick="switchTab('enquiries')">Enquiries</button>
+            <button id="tabBtnSecurity" class="tab-btn" onclick="switchTab('security')">Security Settings</button>
         </div>
 
-        <div class="manage-card">
-            <h2>Live Listings</h2>
-            <table>
-                <thead>
-                    <tr>
+        <div id="listingsTabContent" class="tab-content active">
+            <div class="dashboard-container">
+                <div class="admin-card">
+                    <h2 id="formTitle">Add New Property</h2>
+                    
+                    <input type="hidden" id="editId">
+
+                    <div class="form-group">
+                        <label>Property Name</label>
+                        <input type="text" id="pTitle" placeholder="e.g. Ocean View Apartment">
+                    </div>
+
+                    <div class="form-group">
+                        <label>State</label>
+                        <select id="pState" onchange="updateLGA()">
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>LGA / Neighborhood</label>
+                        <select id="pLGA">
+                            <option value="">Select LGA</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="text" id="pPrice" placeholder="e.g. ₦150,000,000">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="pType">
+                            <option value="sale">For Sale</option>
+                            <option value="rent">For Rent</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="pDescription" placeholder="Describe the property, features, amenities, etc." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #dfe6e9; font-size: 14px; font-family: 'Poppins', sans-serif; resize: vertical; min-height: 100px;"></textarea>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="pFeatured">
+                        <label style="margin-bottom:0">Featured (Show on Home Slider)</label>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="pVerified">
+                        <label style="margin-bottom:0">Verified Property</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Images</label>
+                        <input type="file" id="pImages" accept="image/*" multiple>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Videos (Optional)</label>
+                        <input type="file" id="pVideos" accept="video/*" multiple>
+                    </div>
+
+                    <button class="btn-post" id="publishBtn" onclick="processAndSave()">Publish Listing</button>
+                    <button class="btn-post" id="cancelBtn" onclick="resetForm()" style="display:none; background:#b2bec3; margin-top: 5px;">Cancel Edit</button>
+                    <p id="uploadStatus"></p>
+                </div>
+
+                <div class="manage-card">
+                    <h2>Live Listings</h2>
+                    <table>
+                        <thead>
+                            <tr>
                                 <th>Property</th>
-                        <th>Location</th>
-                        <th>Type</th>
-                        <th>Price</th>
-                        <th>Verified</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="listingTable"></tbody>
-            </table>
+                                <th>Location</th>
+                                <th>Type</th>
+                                <th>Price</th>
+                                <th>Verified</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listingTable"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <script>
+        <div id="enquiriesTabContent" class="tab-content">
+            <div class="dashboard-container full-width-container" style="display: block; max-width: 1100px; margin: 0 auto;">
+                <div class="manage-card">
+                    <h2 style="font-size: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 25px;">Customer Enquiries</h2>
+                    <div id="enquiriesList" class="enquiries-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="securityTabContent" class="tab-content">
+            <div class="dashboard-container full-width-container" style="display: block; max-width: 600px; margin: 0 auto;">
+                <div class="manage-card">
+                    <h2 style="font-size: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 25px;">Change Account Password</h2>
+                    
+                    <form id="changePasswordForm" onsubmit="handlePasswordChange(event)">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" placeholder="Enter current admin password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" placeholder="Minimum 6 characters" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" placeholder="Re-type new password" required>
+                        </div>
+
+                        <button type="submit" class="btn-post">Update Password</button>
+                        <p id="passwordStatus"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div> <script>
         // Data Object (Keep this consistent with your search.html)
         const nigeriaData = {
             "Abia": ["Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala Ngwa North", "Isiala Ngwa South", "Isuikwuato", "Obingwa", "Ohafia", "Osisioma", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu-Nneochi"],
@@ -215,45 +343,108 @@
             "Zamfara": ["Anka", "Bakura", "Birnin Magaji/Kiyaw", "Bukkuyum", "Bungudu", "Gummi", "Gusau", "Kaura Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Chafe", "Zurmi"]
         };
 
+        const PILOT_STATE = 'Delta';
+        const PILOT_LGA = 'Sapele';
+
+        function normalizePilotListings() {
+            const db = JSON.parse(localStorage.getItem('property_db') || '[]');
+            const updated = db.map(item => {
+                const state = item.state === 'Delta' ? 'Delta' : PILOT_STATE;
+                const location = (item.location === 'Sapele' || item.lga === 'Sapele') ? 'Sapele' : PILOT_LGA;
+                const isPilotProperty = state === PILOT_STATE && location === PILOT_LGA;
+                return {
+                    ...item,
+                    state,
+                    location,
+                    lga: location,
+                    featured: isPilotProperty ? Boolean(item.featured) : false,
+                    verified: isPilotProperty ? Boolean(item.verified) : false
+                };
+            });
+            localStorage.setItem('property_db', JSON.stringify(updated));
+        }
+
         // Populate States on Load
         const stateSelect = document.getElementById('pState');
         const lgaSelect = document.getElementById('pLGA');
 
-        Object.keys(nigeriaData).forEach(state => {
-            let opt = document.createElement('option');
-            opt.value = state;
-            opt.innerHTML = state;
-            stateSelect.appendChild(opt);
-        });
+        stateSelect.innerHTML = '<option value="Delta">Delta</option>';
+        stateSelect.value = PILOT_STATE;
+        lgaSelect.innerHTML = '<option value="Sapele">Sapele</option>';
+        lgaSelect.value = PILOT_LGA;
 
-        function updateLGA(selectedLga = "") {
-            const selectedState = stateSelect.value;
-            lgaSelect.innerHTML = '<option value="">Select LGA</option>';
-            if (selectedState) {
-                nigeriaData[selectedState].forEach(lga => {
-                    let opt = document.createElement('option');
-                    opt.value = lga;
-                    opt.innerHTML = lga;
-                    if(lga === selectedLga) opt.selected = true;
-                    lgaSelect.appendChild(opt);
-                });
+        function updateLGA(selectedLga = PILOT_LGA) {
+            lgaSelect.innerHTML = '<option value="Sapele">Sapele</option>';
+            lgaSelect.value = PILOT_LGA;
+            if (selectedLga && selectedLga !== PILOT_LGA) {
+                lgaSelect.value = PILOT_LGA;
             }
         }
 
-        // Auth Check
+        /* ── NAVIGATION TAB SWITCHER ── */
+        function switchTab(tabName) {
+            const listingsBtn = document.getElementById('tabBtnListings');
+            const enquiriesBtn = document.getElementById('tabBtnEnquiries');
+            const securityBtn = document.getElementById('tabBtnSecurity');
+            const listingsContent = document.getElementById('listingsTabContent');
+            const enquiriesContent = document.getElementById('enquiriesTabContent');
+            const securityContent = document.getElementById('securityTabContent');
+
+            listingsBtn.classList.remove('active');
+            enquiriesBtn.classList.remove('active');
+            securityBtn.classList.remove('active');
+            listingsContent.classList.remove('active');
+            enquiriesContent.classList.remove('active');
+            securityContent.classList.remove('active');
+
+            if (tabName === 'listings') {
+                listingsBtn.classList.add('active');
+                listingsContent.classList.add('active');
+            } else if (tabName === 'enquiries') {
+                enquiriesBtn.classList.add('active');
+                enquiriesContent.classList.add('active');
+                loadEnquiries();
+            } else if (tabName === 'security') {
+                securityBtn.classList.add('active');
+                securityContent.classList.add('active');
+                const statusEl = document.getElementById('passwordStatus');
+                statusEl.className = '';
+                statusEl.textContent = '';
+            }
+
+            if (tabName !== 'security') {
+                const statusEl = document.getElementById('passwordStatus');
+                statusEl.className = '';
+                statusEl.textContent = '';
+            }
+        }
+
+        /* ── AUTHENTICATION ENGINE ── */
+        // Check if customizable password exists in Storage, otherwise set default
+        if (!localStorage.getItem('adminPassword')) {
+            localStorage.setItem('adminPassword', 'admin123');
+        }
+
+        normalizePilotListings();
+
         if (localStorage.getItem('isAdmin') === 'true') {
             document.getElementById('adminContent').style.display = 'block';
+            loadListings();
+            loadEnquiries();
         } else {
             document.getElementById('loginContainer').style.display = 'flex';
         }
 
         function loginAdmin() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === 'admin123') {  // Simple hardcoded password for demo
+            const enteredPassword = document.getElementById('adminPassword').value;
+            const currentSecret = localStorage.getItem('adminPassword') || 'admin123';
+
+            if (enteredPassword === currentSecret) {
                 localStorage.setItem('isAdmin', 'true');
                 document.getElementById('loginContainer').style.display = 'none';
                 document.getElementById('adminContent').style.display = 'block';
-                loadListings();  // Load the listings after login
+                loadListings();
+                loadEnquiries();
             } else {
                 document.getElementById('loginError').style.display = 'block';
             }
@@ -264,6 +455,54 @@
             window.location.href = 'index.html';
         }
 
+        /* ── CHANGE PASSWORD HANDLER ── */
+        function handlePasswordChange(event) {
+            event.preventDefault();
+
+            const currentInput = document.getElementById('currentPassword').value;
+            const newInput = document.getElementById('newPassword').value;
+            const confirmInput = document.getElementById('confirmPassword').value;
+            const statusEl = document.getElementById('passwordStatus');
+
+            // Reset styles
+            statusEl.className = '';
+            statusEl.textContent = '';
+
+            const activePassword = localStorage.getItem('adminPassword') || 'admin123';
+
+            // Verification Sequence
+            if (currentInput !== activePassword) {
+                statusEl.textContent = 'Incorrect current password.';
+                statusEl.className = 'status-error';
+                return;
+            }
+
+            if (newInput.length < 6) {
+                statusEl.textContent = 'New password must be at least 6 characters long.';
+                statusEl.className = 'status-error';
+                return;
+            }
+
+            if (newInput !== confirmInput) {
+                statusEl.textContent = 'Confirm password does not match new password.';
+                statusEl.className = 'status-error';
+                return;
+            }
+
+            if (newInput === currentInput) {
+                statusEl.textContent = 'New password cannot match your current active password.';
+                statusEl.className = 'status-error';
+                return;
+            }
+
+            // Save and reset interface
+            localStorage.setItem('adminPassword', newInput);
+            statusEl.textContent = 'Security credentials updated successfully!';
+            statusEl.className = 'status-success';
+            document.getElementById('changePasswordForm').reset();
+        }
+
+        /* ── MEDIA READER UTILITIES ── */
         const fileToDataUrl = file => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result);
@@ -271,11 +510,12 @@
             reader.readAsDataURL(file);
         });
 
+        /* ── PROPERTY DB WORKFLOWS ── */
         async function processAndSave() {
             const editId = document.getElementById('editId').value;
             const title = document.getElementById('pTitle').value;
-            const state = document.getElementById('pState').value;
-            const lga = document.getElementById('pLGA').value;
+            const state = PILOT_STATE;
+            const lga = PILOT_LGA;
             const price = document.getElementById('pPrice').value;
             const type = document.getElementById('pType').value;
             const description = document.getElementById('pDescription').value;
@@ -284,7 +524,7 @@
             const videoFiles = document.getElementById('pVideos').files;
             const status = document.getElementById('uploadStatus');
 
-            if(!title || !state || !lga) return alert("Title, State, and LGA are required.");
+            if(!title) return alert("Title is required.");
 
             status.innerText = "Processing Listing...";
             document.getElementById('publishBtn').disabled = true;
@@ -309,12 +549,12 @@
                     id: editId ? parseInt(editId) : Date.now(),
                     title,
                     state,
-                    location: lga, // We store the LGA in the 'location' field for search compatibility
+                    location: lga,
                     price,
                     type,
                     description,
-                    featured: isFeatured,
-                    verified: isVerified,
+                    featured: isFeatured && state === PILOT_STATE && lga === PILOT_LGA,
+                    verified: isVerified && state === PILOT_STATE && lga === PILOT_LGA,
                     images: imageUrls,
                     videos: videoUrls,
                     image: imageUrls[0]
@@ -359,6 +599,70 @@
             `).join('');
         }
 
+        function escapeHtml(value = '') {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function loadEnquiries() {
+            const list = document.getElementById('enquiriesList');
+            const requests = JSON.parse(localStorage.getItem('contact_requests')) || [];
+
+            if (!requests.length) {
+                list.innerHTML = '<div class="empty-state">No customer enquiries have been submitted yet.</div>';
+                return;
+            }
+
+            list.innerHTML = requests.slice().reverse().map(request => {
+                const images = (request.images || []).map(img => `
+                    <img src="${img.data}" alt="${escapeHtml(img.name || 'Uploaded image')}" loading="lazy">
+                `).join('');
+
+                const videos = (request.videos || []).map(video => `
+                    <video controls src="${video.data}" preload="metadata"></video>
+                `).join('');
+
+                const requestType = (request.requestType || 'general_inquiry')
+                    .replace(/_/g, ' ')
+                    .replace(/\b\w/g, char => char.toUpperCase());
+
+                return `
+                    <div class="enquiry-card">
+                        <div class="enquiry-header">
+                            <div>
+                                <strong>${escapeHtml(request.name || 'Unknown')}</strong>
+                                <small>${escapeHtml(request.email || 'No email')}</small>
+                            </div>
+                            <button class="btn-action btn-delete" onclick="deleteEnquiry(${request.id})">Delete</button>
+                        </div>
+
+                        <div class="enquiry-meta">
+                            <span><strong>Type:</strong> ${escapeHtml(requestType)}</span>
+                            <span><strong>Submitted:</strong> ${new Date(request.createdAt || Date.now()).toLocaleString()}</span>
+                        </div>
+
+                        <p class="enquiry-message">${escapeHtml(request.message || '')}</p>
+
+                        ${images ? `<div class="media-grid">${images}</div>` : ''}
+                        ${videos ? `<div class="media-grid">${videos}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteEnquiry(id) {
+            if (!confirm('Delete this enquiry?')) return;
+
+            const requests = JSON.parse(localStorage.getItem('contact_requests')) || [];
+            const filtered = requests.filter(request => request.id !== id);
+            localStorage.setItem('contact_requests', JSON.stringify(filtered));
+            loadEnquiries();
+        }
+
         function editItem(id) {
             const db = JSON.parse(localStorage.getItem('property_db')) || [];
             const p = db.find(item => item.id == id);
@@ -366,8 +670,8 @@
 
             document.getElementById('editId').value = p.id;
             document.getElementById('pTitle').value = p.title;
-            document.getElementById('pState').value = p.state;
-            updateLGA(p.location); // Trigger LGA population and select current one
+            document.getElementById('pState').value = PILOT_STATE;
+            updateLGA(p.location || PILOT_LGA);
             document.getElementById('pPrice').value = p.price;
             document.getElementById('pType').value = p.type;
             document.getElementById('pDescription').value = p.description || "";
@@ -383,8 +687,9 @@
         function resetForm() {
             document.getElementById('editId').value = "";
             document.getElementById('pTitle').value = "";
-            document.getElementById('pState').value = "";
-            lgaSelect.innerHTML = '<option value="">Select LGA</option>';
+            document.getElementById('pState').value = PILOT_STATE;
+            lgaSelect.innerHTML = '<option value="Sapele">Sapele</option>';
+            lgaSelect.value = PILOT_LGA;
             document.getElementById('pPrice').value = "";
             document.getElementById('pDescription').value = "";
             document.getElementById('pFeatured').checked = false;
@@ -413,9 +718,6 @@
                 loadListings();
             }
         }
-
-        window.onload = loadListings;
     </script>
-    </div> <!-- End adminContent -->
 </body>
 </html>

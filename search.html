@@ -4,93 +4,308 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find Your Home | PELEPRO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #ff6b6b; --glass: rgba(255, 255, 255, 0.1); }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        
-        body { 
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                        url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
+        :root {
+            --gold: #C9A84C;
+            --gold-light: #F0C96B;
+            --gold-dim: rgba(201,168,76,0.18);
+            --navy: #050E1E;
+            --navy-mid: #0A1930;
+            --glass: rgba(6,16,36,0.72);
+            --glass-light: rgba(255,255,255,0.07);
+            --glass-border: rgba(255,255,255,0.11);
+            --glass-border-gold: rgba(201,168,76,0.28);
+            --text: #F0EDE8;
+            --text-muted: rgba(240,237,232,0.55);
+            --radius: 18px;
+            --radius-sm: 10px;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--navy);
+            color: var(--text);
             min-height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 24px;
         }
 
+        /* ── BACKGROUND SCENE ── */
+        .bg-scene {
+            position: fixed; inset: 0; z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 30%, rgba(201,168,76,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 50% at 80% 70%, rgba(30,60,110,0.25) 0%, transparent 60%),
+                linear-gradient(160deg, #050E1E 0%, #0A1A35 50%, #06132A 100%);
+            overflow: hidden;
+        }
+
+        .bg-img {
+            position: absolute; inset: 0;
+            background: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            opacity: 0.08;
+            filter: grayscale(40%);
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--gold);
+            opacity: 0;
+            animation: floatUp var(--dur, 12s) linear var(--delay, 0s) infinite;
+        }
+
+        @keyframes floatUp {
+            0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+            10%  { opacity: 0.25; }
+            90%  { opacity: 0.1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* ── SEARCH PANEL ── */
         .search-container {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(20px);
-            padding: 50px;
-            border-radius: 30px;
-            border: 1px solid rgba(255,255,255,0.1);
-            width: 90%;
-            max-width: 600px;
+            position: relative;
+            z-index: 1;
+            background: var(--glass);
+            backdrop-filter: blur(32px) saturate(130%);
+            -webkit-backdrop-filter: blur(32px) saturate(130%);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 52px 48px;
+            width: 92%;
+            max-width: 580px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+            overflow: hidden;
         }
 
-        h2 { font-size: 28px; margin-bottom: 30px; letter-spacing: -1px; }
-        .search-box { display: flex; flex-direction: column; gap: 20px; }
-        .input-wrap { text-align: left; }
-        label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; display: block; }
+        .search-container::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .eyebrow::before, .eyebrow::after {
+            content: ''; display: block;
+            width: 24px; height: 1px; background: var(--gold-dim);
+        }
+
+        h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 5vw, 2.6rem);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 32px;
+            letter-spacing: -0.5px;
+        }
+        h2 em {
+            font-style: italic;
+            color: var(--gold);
+        }
+
+        .search-box {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .input-wrap {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gold);
+            padding-left: 4px;
+        }
+
+        .select-custom-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Pure CSS custom caret icon */
+        .select-custom-wrapper::after {
+            content: "▼";
+            font-size: 8px;
+            color: var(--text-muted);
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+        .select-custom-wrapper:focus-within::after {
+            color: var(--gold);
+        }
 
         select {
-            width: 100%; padding: 15px; border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05);
-            color: white; font-size: 15px; outline: none; transition: 0.3s;
+            width: 100%;
+            padding: 14px 40px 14px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             appearance: none;
+            -webkit-appearance: none;
             cursor: pointer;
         }
 
-        select option { background: #1a1a1a; color: white; padding: 10px; }
-        select:focus { border-color: var(--primary); background: rgba(255,255,255,0.1); }
-
-        .btn-search {
-            margin-top: 10px; padding: 18px; background: var(--primary);
-            color: white; border: none; border-radius: 12px;
-            font-weight: 700; cursor: pointer; font-size: 16px;
-            transition: 0.3s; text-transform: uppercase;
+        select:focus {
+            border-color: var(--glass-border-gold);
+            background: rgba(201, 168, 76, 0.05);
+            box-shadow: 0 0 15px rgba(201, 168, 76, 0.1);
         }
 
-        .btn-search:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3); }
-        .back-home { margin-top: 20px; display: block; color: rgba(255,255,255,0.5); text-decoration: none; font-size: 13px; }
+        select option {
+            background: var(--navy-mid);
+            color: var(--text);
+            padding: 12px;
+        }
+
+        .btn-search {
+            margin-top: 12px;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+            color: var(--navy);
+            border: none;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(201, 168, 76, 0.35);
+        }
+        .btn-search:active {
+            transform: scale(0.98);
+        }
+
+        .back-home {
+            margin-top: 28px;
+            display: inline-block;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: color 0.25s;
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-home:hover {
+            color: var(--gold-light);
+        }
+
+        /* ── TOAST CONTAINER ── */
+        .toast {
+            position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
+            background: rgba(5,14,30,0.95);
+            border: 1px solid var(--glass-border-gold);
+            border-radius: 12px; padding: 14px 24px;
+            font-size: 13.5px; color: var(--text);
+            z-index: 9999; white-space: nowrap;
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s;
+            opacity: 0;
+            backdrop-filter: blur(20px);
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        @media (max-width: 520px) {
+            .search-container { padding: 36px 24px; }
+            h2 { font-size: 2rem; }
+            .search-box { gap: 18px; }
+            .btn-search { padding: 14px; font-size: 13px; }
+        }
     </style>
 </head>
 <body>
 
+    <div class="bg-scene" id="bgScene">
+        <div class="bg-img"></div>
+    </div>
+
     <div class="search-container">
-        <h2>Start Your Search</h2>
+        <div class="eyebrow">Interactive Finder</div>
+        <h2>Start Your <em>Search</em></h2>
         
         <div class="search-box">
             <div class="input-wrap">
                 <label>State</label>
-                <select id="stateSelect" onchange="updateLGA()">
-                    <option value="">Select State</option>
-                </select>
+                <div class="select-custom-wrapper">
+                    <select id="stateSelect" onchange="updateLGA()">
+                        <option value="">Select State</option>
+                    </select>
+                </div>
             </div>
 
             <div class="input-wrap">
                 <label>LGA / Neighborhood</label>
-                <select id="lgaSelect">
-                    <option value="">Select LGA</option>
-                </select>
+                <div class="select-custom-wrapper">
+                    <select id="lgaSelect">
+                        <option value="">Select LGA</option>
+                    </select>
+                </div>
             </div>
 
             <div class="input-wrap">
                 <label>Property Type</label>
-                <select id="searchType">
-                    <option value="sale">For Sale</option>
-                    <option value="rent">For Rent</option>
-                </select>
+                <div class="select-custom-wrapper">
+                    <select id="searchType">
+                        <option value="sale">For Sale</option>
+                        <option value="rent">For Rent</option>
+                    </select>
+                </div>
             </div>
 
             <button class="btn-search" onclick="executeSearch()">Find Properties</button>
         </div>
 
-        <a href="index.html" class="back-home">Return to Home</a>
+        <a href="index.html" class="back-home">← Return to Home</a>
     </div>
+
+    <div class="toast" id="toast"></div>
 
     <script>
         // Full Nigeria States & LGAs Data
@@ -134,16 +349,17 @@
             "Zamfara": ["Anka", "Bakura", "Birnin Magaji/Kiyaw", "Bukkuyum", "Bungudu", "Gummi", "Gusau", "Kaura Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Chafe", "Zurmi"]
         };
 
+        const PILOT_STATE = 'Delta';
+        const PILOT_LGA = 'Sapele';
+
         // Populate State Dropdown
         const stateSelect = document.getElementById('stateSelect');
         const lgaSelect = document.getElementById('lgaSelect');
 
-        Object.keys(nigeriaData).forEach(state => {
-            let opt = document.createElement('option');
-            opt.value = state;
-            opt.innerHTML = state;
-            stateSelect.appendChild(opt);
-        });
+        stateSelect.innerHTML = '<option value="Delta">Delta</option>';
+        stateSelect.value = PILOT_STATE;
+        lgaSelect.innerHTML = '<option value="Sapele">Sapele</option>';
+        lgaSelect.value = PILOT_LGA;
 
         // Check URL parameters and pre-select type if provided
         const urlParams = new URLSearchParams(window.location.search);
@@ -154,37 +370,51 @@
 
         // Update LGA Dropdown based on State
         function updateLGA() {
-            const selectedState = stateSelect.value;
-            lgaSelect.innerHTML = '<option value="">Select LGA</option>'; // Reset
+            stateSelect.value = PILOT_STATE;
+            lgaSelect.innerHTML = '<option value="Sapele">Sapele</option>';
+            lgaSelect.value = PILOT_LGA;
+        }
 
-            if (selectedState) {
-                const lgas = nigeriaData[selectedState];
-                lgas.forEach(lga => {
-                    let opt = document.createElement('option');
-                    opt.value = lga;
-                    opt.innerHTML = lga;
-                    lgaSelect.appendChild(opt);
-                });
+        /* ── BACKGROUND PARTICLES ── */
+        function spawnParticles() {
+            const scene = document.getElementById('bgScene');
+            for (let i = 0; i < 14; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 4 + 1.5;
+                p.style.cssText = `
+                    width:${size}px; height:${size}px;
+                    left:${Math.random()*100}%;
+                    --dur:${Math.random()*10+10}s;
+                    --delay:${Math.random()*14}s;
+                `;
+                scene.appendChild(p);
             }
+        }
+
+        /* ── PREMIUM TOAST NOTIFICATION ── */
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2800);
         }
 
         function executeSearch() {
-            const state = stateSelect.value;
-            const lga = lgaSelect.value;
+            const state = PILOT_STATE;
+            const lga = PILOT_LGA;
             const type = document.getElementById('searchType').value;
 
-            if (!state || !lga) {
-                alert("Please select both a State and an LGA.");
-                return;
-            }
+            stateSelect.value = state;
+            lgaSelect.value = lga;
 
-            // Save search parameters - we use the LGA for the primary location search
             localStorage.setItem('lastSearchLoc', lga.toLowerCase());
             localStorage.setItem('lastSearchState', state.toLowerCase());
-            
-            // Redirect
             window.location.href = (type === 'sale') ? "sale.html" : "rent.html";
         }
+
+        // Initialize particles on load
+        window.addEventListener('DOMContentLoaded', spawnParticles);
     </script>
 </body>
 </html>

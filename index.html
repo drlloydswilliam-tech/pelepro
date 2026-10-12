@@ -659,7 +659,7 @@ footer p {
 <section class="stats-section">
   <div class="section-header">
     <div class="section-eyebrow">Why PELEPRO</div>
-    <h2 class="section-title">Trusted Across Nigeria</h2>
+    <h2 class="section-title">Trusted Across DELTA STATE</h2>
   </div>
   <div class="stats-grid" id="statsGrid">
     <div class="stat-card">
@@ -674,8 +674,8 @@ footer p {
     </div>
     <div class="stat-card">
       <div class="stat-icon">📍</div>
-      <div class="stat-number">50+</div>
-      <div class="stat-label">Cities Covered</div>
+      <div class="stat-number">1+</div>
+      <div class="stat-label">City Covered</div>
     </div>
     <div class="stat-card">
       <div class="stat-icon">⭐</div>
@@ -725,20 +725,21 @@ footer p {
 function seedDB() {
   if (localStorage.getItem('property_db')) return;
   const props = [
-    { id:1, title:"Luxury Ocean View Villa", state:"Lagos", lga:"Lagos Island", price:"₦450,000,000", type:"sale", featured:true, bedrooms:4, bathrooms:3, image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" },
-    { id:2, title:"Modern Downtown Apartment", state:"Lagos", lga:"Ikeja", price:"₦85,000/mo", type:"rent", featured:true, bedrooms:2, bathrooms:2, image:"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80" },
-    { id:3, title:"Spacious Family Home", state:"Abuja", lga:"Wuse", price:"₦120,000,000", type:"sale", featured:true, bedrooms:5, bathrooms:4, image:"https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80" },
-    { id:4, title:"Cozy Studio Apartment", state:"Port Harcourt", lga:"Obio-Akpor", price:"₦35,000/mo", type:"rent", featured:true, bedrooms:1, bathrooms:1, image:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80" },
-    { id:5, title:"Executive Penthouse", state:"Lagos", lga:"Victoria Island", price:"₦250,000,000", type:"sale", featured:true, bedrooms:3, bathrooms:3, image:"https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80" },
-    { id:6, title:"Garden Bungalow", state:"Enugu", lga:"Independence Layout", price:"₦65,000,000", type:"sale", featured:true, bedrooms:3, bathrooms:2, image:"https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=600&q=80" },
-    { id:7, title:"Commercial Office Space", state:"Kano", lga:"Kano Municipal", price:"₦150,000/mo", type:"rent", featured:false, bedrooms:0, bathrooms:2, image:"https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80" },
-    { id:8, title:"Suburban Townhouse", state:"Ibadan", lga:"Ibadan North", price:"₦45,000,000", type:"sale", featured:false, bedrooms:3, bathrooms:2, image:"https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=600&q=80" },
+    { id:1, title:"Sapele Executive Villa", state:"Delta", lga:"Sapele", location:"Sapele", price:"₦450,000,000", type:"sale", featured:true, bedrooms:4, bathrooms:3, image:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=600&q=80" },
+    { id:2, title:"Sapele City Apartment", state:"Delta", lga:"Sapele", location:"Sapele", price:"₦85,000/mo", type:"rent", featured:true, bedrooms:2, bathrooms:2, image:"https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=600&q=80" },
+    { id:3, title:"Sapele Family Home", state:"Delta", lga:"Sapele", location:"Sapele", price:"₦120,000,000", type:"sale", featured:true, bedrooms:5, bathrooms:4, image:"https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=600&q=80" },
+    { id:4, title:"Sapele Studio Residence", state:"Delta", lga:"Sapele", location:"Sapele", price:"₦35,000/mo", type:"rent", featured:true, bedrooms:1, bathrooms:1, image:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=600&q=80" },
   ];
   localStorage.setItem('property_db', JSON.stringify(props));
 }
 
 function getDB() {
-  return JSON.parse(localStorage.getItem('property_db') || '[]');
+  const db = JSON.parse(localStorage.getItem('property_db') || '[]');
+  return db.filter(item => {
+    const state = (item.state || '').toLowerCase();
+    const location = ((item.location || item.lga || '') + '').toLowerCase();
+    return state === 'delta' && location === 'sapele';
+  });
 }
 
 /* ── PARTICLES ── */
@@ -811,7 +812,7 @@ document.getElementById('searchInput').addEventListener('keydown', e => {
 /* ── SCROLLER ── */
 function buildScroller() {
   const db = getDB();
-  const featured = db.filter(p => p.featured);
+  const featured = db.filter(p => p.featured && (p.state === 'Delta' || p.state === 'delta') && (p.location === 'Sapele' || p.lga === 'Sapele'));
   if (!featured.length) return;
 
   const html = featured.map(p => `
@@ -836,7 +837,7 @@ function buildScroller() {
 /* ── FEATURED GRID ── */
 function buildFeaturedGrid() {
   const db = getDB();
-  let items = db.filter(p => p.featured);
+  let items = db.filter(p => p.featured && (p.state === 'Delta' || p.state === 'delta') && (p.location === 'Sapele' || p.lga === 'Sapele'));
   if (items.length > 6) {
     const start = Math.floor(Math.random() * (items.length - 5));
     items = items.slice(start, start + 6);
